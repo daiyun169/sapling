@@ -35,9 +35,13 @@
 
     // 按钮点击事件
     function buttonClick(e) {
-        const pathElement = e.target.parentElement.parentElement.querySelector('.opblock-summary-path');
-        const path = pathElement.getAttribute('data-path');
-        window.copyToClipboard(path);
+        try {
+            const pathElement = e.target.parentElement.parentElement.querySelector('.opblock-summary-path');
+            const path = pathElement.getAttribute('data-path');
+            window.copyToClipboard(path);
+        } catch (error) {
+
+        }
         e.stopPropagation();
     }
 
