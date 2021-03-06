@@ -1,0 +1,90 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 10vmin;
+  pointer-events: none;
+  vertical-align: middle;
+  margin-right: 4vmin;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+a {
+  text-decoration: none;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.appRoot {
+}
+
+.content {
+  margin: 0 auto;
+  padding: 6vmin;
+  /* color: #13ce66; */
+}
+
+.tip {
+  text-align: center;
+  color: #1fa0ff;
+}
+
+.tip a {
+  color: lightgreen;
+  text-decoration: underline;
+}
+
+.table {
+  margin-top: 10px;
+}
+
+.pagination {
+  margin-top: 10px;
+}
+
+.xuhao {
+  width: 80px;
+}
+
+.rp {
+  color: #1d8ce0;
+}
