@@ -158,7 +158,7 @@ class App extends Component {
         this.queryList(this.state.pageNum + 1, 20);
       });
     } else {
-      Message.error("搜索的内容长度需要大于2");
+      Message.error("搜索的内容长度需要大于2个字符");
     }
   }
 
@@ -243,7 +243,7 @@ class App extends Component {
           </div>
           <div className="App">
             <Input
-              placeholder="请输入接口地址或者接口描述（长度大于2）"
+              placeholder="请输入接口地址或者接口描述（长度大于2个字符）"
               value={this.state.keyword}
               onChange={this.onChange.bind(this)}
               onKeyDown={this.search.bind(this)}
