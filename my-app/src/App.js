@@ -1,12 +1,9 @@
 import "./App.css";
 import logo from "./logo.png";
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import {
   Button,
   Input,
-  AutoComplete,
   Table,
   Pagination,
   Tag,
@@ -46,14 +43,22 @@ class App extends Component {
     };
     this.formatKeyword = (value) => {
       let val = value;
-      let rp = <span className="rp">{this.state.keyword}</span>;
-      let tempUriArr = val
-        .replaceAll(this.state.keyword, `##${this.state.keyword}##`)
-        .split("##");
-      let allElement = tempUriArr.map((item) =>
-        item == this.state.keyword ? rp : item
-      );
-      if (val.indexOf(this.state.keyword) !== -1) {
+      // mysql 匹配会忽略大小写，所以匹配到字符需要先提取出来（保留原始大小写）
+      let reg = new RegExp(this.state.keyword, "ig");
+      let matchResult = val.match(reg);
+      let realMatchStr;
+      if (matchResult) {
+        realMatchStr = matchResult[0];
+        let tempUriArr = val
+          .replaceAll(realMatchStr, `##${realMatchStr}##`)
+          .split("##");
+        let allElement = tempUriArr.map((item) =>
+          item.toLocaleLowerCase() == this.state.keyword.toLocaleLowerCase() ? (
+            <span className="rp">{item}</span>
+          ) : (
+            item
+          )
+        );
         return <span>{allElement}</span>;
       } else {
         return val;
@@ -65,6 +70,7 @@ class App extends Component {
           label: "微服务",
           prop: "app",
           width: 200,
+          align: "center",
           render: function (data) {
             return <Tag>{data.app}</Tag>;
           },
@@ -73,11 +79,13 @@ class App extends Component {
           label: "方法",
           prop: "requestMethod",
           width: 100,
+          align: "center",
         },
         {
           label: "接口地址",
           prop: "requestUri",
           minWidth: 300,
+          align: "center",
           render: (data) => {
             return this.formatKeyword(data.requestUri);
           },
@@ -87,6 +95,7 @@ class App extends Component {
           label: "描述",
           prop: "summary",
           width: 300,
+          align: "center",
           render: (data) => {
             return this.formatKeyword(data.summary || data.description);
           },
@@ -95,6 +104,7 @@ class App extends Component {
           label: "操作",
           prop: "requestUri",
           minWidth: 280,
+          align: "center",
           render: (data) => {
             return (
               <span>
@@ -124,6 +134,7 @@ class App extends Component {
       keyword: "",
       pageNum: 0,
       total: 0,
+      pageSize: 10,
     };
   }
 
@@ -153,9 +164,13 @@ class App extends Component {
     if ("keydown" == type && "Enter" != code) {
       return;
     }
+    this.findData(1);
+  }
+
+  findData(pageNum = 1) {
     if (this.validParams()) {
       this.resetQueryParam().then(() => {
-        this.queryList(this.state.pageNum + 1, 20);
+        this.queryList(pageNum);
       });
     } else {
       Message.error("搜索的内容长度需要大于2个字符");
@@ -167,9 +182,9 @@ class App extends Component {
       this.setState(
         {
           list: [],
+          loading: false,
           pageNum: 0,
           total: 0,
-          loading: false,
         },
         () => {
           resolve();
@@ -178,11 +193,11 @@ class App extends Component {
     });
   }
 
-  queryList(pageNum = 1, pageSize = 20) {
+  queryList(pageNum = 1) {
     this.showLoading();
     axios
       .get(
-        `http://10.10.3.88:15522/eureka/api_list?keyword=${this.state.keyword}&pageNum=${pageNum}&pageSize=${pageSize}`,
+        `http://10.10.3.88:15522/eureka/api_list?keyword=${this.state.keyword}&pageNum=${pageNum}&pageSize=${this.state.pageSize}`,
         { timeout: 5000 }
       )
       .then((response) => {
@@ -203,12 +218,10 @@ class App extends Component {
     if (status === 200) {
       const { code, data: apiData = {}, message = "" } = data;
       if (code === 0) {
-        const { list, pageNum, pages, size, total } = apiData;
+        const { list, pageNum, total } = apiData;
         this.setState({
           list: [...list],
           pageNum: pageNum,
-          pages: pages,
-          size: size,
           total: total,
         });
       } else {
@@ -225,7 +238,9 @@ class App extends Component {
     });
   }
 
-  onPageChange() {}
+  onPageChange(currentPage) {
+    this.findData(currentPage);
+  }
 
   render() {
     return (
@@ -270,6 +285,7 @@ class App extends Component {
                 className="pagination"
                 layout="total, prev, pager, next"
                 total={this.state.total}
+                pageSize={this.state.pageSize}
                 currentPage={this.state.pageNum}
                 onCurrentChange={this.onPageChange.bind(this)}
               />
