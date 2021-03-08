@@ -250,8 +250,21 @@ class App extends Component {
             <h3 className="tip">
               <img src={logo} className="App-logo" alt="logo" />
               搜索内容是基于&nbsp;
-              <a href="http://10.10.3.63:1111/" target="_blank">
-                eureka
+              <a
+                href="http://10.10.3.63:1111/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                EUREKA
+              </a>
+              &nbsp;
+              <a
+                href="http://10.10.3.88:15522/swagger-ui.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="一小时全量更新一次接口信息"
+              >
+                AAC
               </a>
               &nbsp;可能会存在更新不及时的情况。
             </h3>
